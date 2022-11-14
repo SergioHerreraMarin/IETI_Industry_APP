@@ -57,10 +57,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
-                        Toast("Todos los campos son obligatorios");
+                        Toast("All fields are required");
                     } else {
                         location = String.valueOf(server.getText());
                         uri = "ws://" + location + ":" + port;
+
                         credentials.add(String.valueOf(user.getText()));
                         credentials.add(String.valueOf(password.getText()));
 
