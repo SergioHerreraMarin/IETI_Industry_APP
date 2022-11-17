@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,11 +59,18 @@ public class MainActivity extends AppCompatActivity {
                         location = String.valueOf(server.getText());
                         uri = "ws://" + location + ":" + port;
 
+                        // credentials.add(String.valueOf(server.getText()));
                         credentials.add(String.valueOf(user.getText()));
                         credentials.add(String.valueOf(password.getText()));
 
                         connecta(uri);
+
+                        server.setText("");
+                        user.setText("");
+                        password.setText("");
+
                         changeActiviy();
+
                     }
                 }
             });
@@ -84,10 +88,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onOpen(ServerHandshake handshake) {
                     System.out.println("Connected to: " + getURI());
+                    envia();
                 }
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
+                    // Desconecta el cliente del servidor
+                    RemotControlActivity.setStateConnected(client);
                     System.out.println("Disconnected from: " + getURI());
                 }
 
@@ -99,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
             client.connect();
 
             // Envia las credenciales
-            envia();
         } catch (URISyntaxException e) {
             e.printStackTrace();
             System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
@@ -108,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
     protected void envia(){
         try {
-            client.send(objToBytes(credentials));
+            String userCredentials = "UC#" + credentials.get(0) + "#" + credentials.get(1);
+            client.send(userCredentials);
         } catch (WebsocketNotConnectedException e) {
             System.out.println("Connexió perduda ...");
         }
@@ -117,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void changeActiviy() {
         Intent intent = new Intent(this, RemotControlActivity.class);
-        intent.putExtra("uri",uri);
-        // intent.putExtra("client", client);
+        intent.putExtra("credentials",credentials);
         startActivity(intent);
     }
 
