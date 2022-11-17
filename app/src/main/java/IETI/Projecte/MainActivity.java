@@ -64,13 +64,8 @@ public class MainActivity extends AppCompatActivity {
                         credentials.add(String.valueOf(password.getText()));
 
                         connecta(uri);
-
-                        server.setText("");
                         user.setText("");
                         password.setText("");
-
-                        changeActiviy();
-
                     }
                 }
             });
@@ -81,8 +76,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
                 @Override
-                public void onMessage(String message) {
-                    System.out.println(message);
+                public void onMessage(String message){
+                    if(message.equals("V")){
+                        changeActivity();
+                    } else if(message.equals("NV")){
+                        Toast("User or password incorrect");
+                    } else if(message.equals("XML")){
+                        // Cargar el XML en el Android
+                    }
                 }
 
                 @Override
@@ -103,9 +104,8 @@ public class MainActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
             };
-            client.connect();
 
-            // Envia las credenciales
+            client.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
             System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
@@ -122,49 +122,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void changeActiviy() {
+    public void changeActivity() {
         Intent intent = new Intent(this, RemotControlActivity.class);
         intent.putExtra("credentials",credentials);
         startActivity(intent);
-    }
-
-
-    // Método para transformar el ArrayList de credenciales al Servidor
-    public static byte[] objToBytes(Object obj) {
-        byte[] result = null;
-        try {
-            // Transforma l'objecte a bytes[]
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            oos.writeObject(obj);
-            oos.flush();
-            result = bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public static Object bytesToObject(ByteBuffer arr) {
-        Object result = null;
-        try {
-            // Transforma el ByteButter en byte[]
-            byte[] bytesArray = new byte[arr.remaining()];
-            arr.get(bytesArray, 0, bytesArray.length);
-
-            // Transforma l'array de bytes en objecte
-            ByteArrayInputStream in = new ByteArrayInputStream(bytesArray);
-            ObjectInputStream is = new ObjectInputStream(in);
-            return is.readObject();
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
     // Para mandar el
