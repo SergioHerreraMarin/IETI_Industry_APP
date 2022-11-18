@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.java_websocket.client.WebSocketClient;
 
@@ -39,8 +40,13 @@ public class RemotControlActivity extends AppCompatActivity {
         builder.setMessage("You have disconnected from the server");
         builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                client.close();
-                changeActiviy();
+                try{
+                    client.close();
+                    changeActiviy();
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+
             }
         });
         return builder.create();

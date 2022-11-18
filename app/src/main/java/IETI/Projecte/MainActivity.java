@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -53,13 +56,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
+                    if(server.getText().equals("10.0.2.2")) Toast("Server IP incorrect");
+
                     if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
                         Toast("All fields are required");
                     } else {
                         location = String.valueOf(server.getText());
                         uri = "ws://" + location + ":" + port;
 
-                        // credentials.add(String.valueOf(server.getText()));
                         credentials.add(String.valueOf(user.getText()));
                         credentials.add(String.valueOf(password.getText()));
 
@@ -77,12 +81,17 @@ public class MainActivity extends AppCompatActivity {
             client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
                 @Override
                 public void onMessage(String message){
-                    if(message.equals("V")){
-                        changeActivity();
-                    } else if(message.equals("NV")){
-                        Toast("User or password incorrect");
-                    } else if(message.equals("XML")){
-                        // Cargar el XML en el Android
+                    switch (message){
+                        case "V":
+                            changeActivity();
+                            client.send("XML");
+                            break;
+                        case "NV":
+                            Toast("User or password incorrect");
+                            break;
+                        case "Config":
+                            Toast("¡¡¡¡XML!!!!");
+                            break;
                     }
                 }
 
@@ -94,9 +103,10 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
+                    Toast("Server IP incorrect");
+                    System.out.println("Disconnected from: " + getURI());
                     // Desconecta el cliente del servidor
                     RemotControlActivity.setStateConnected(client);
-                    System.out.println("Disconnected from: " + getURI());
                 }
 
                 @Override
@@ -118,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             client.send(userCredentials);
         } catch (WebsocketNotConnectedException e) {
             System.out.println("Connexió perduda ...");
+            connecta(uri);
         }
     }
 
@@ -130,11 +141,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Para mandar el
     public void Toast(CharSequence text){
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
