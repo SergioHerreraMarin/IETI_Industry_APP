@@ -15,8 +15,7 @@ import org.java_websocket.client.WebSocketClient;
 public class RemotControlActivity extends AppCompatActivity {
 
     static WebSocketClient client;
-
-    public static void setStateConnected(WebSocketClient c){
+    static void setStateConnected(WebSocketClient c){
         client = c;
     }
 
@@ -46,7 +45,6 @@ public class RemotControlActivity extends AppCompatActivity {
                 } catch (NullPointerException e){
                     e.printStackTrace();
                 }
-
             }
         });
         return builder.create();
