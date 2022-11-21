@@ -2,6 +2,7 @@ package IETI.Projecte;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -57,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    if(server.getText().equals("10.0.2.2")) Toast("Server IP incorrect");
+                    if(server.getText().equals("10.0.2.2")) Toast(MainActivity.this,"Server IP incorrect");
 
                     if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
-                        Toast("All fields are required");
+                        Toast(MainActivity.this, "All fields are required");
                     } else {
                         location = String.valueOf(server.getText());
                         uri = "ws://" + location + ":" + port;
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         changeActivity();
                         client.send("XML");
                     }else if(message.equals("NV")){
-                        Toast("User or password incorrect");
+                        Toast(MainActivity.this,"User or password incorrect");
                     }else if(message.contains("id")){
                         Log.i("DATA: " , message);
                         Model.componentsData = message;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    Toast("Server IP incorrect");
+                    Toast(MainActivity.this,"Server IP incorrect");
                     System.out.println("Disconnected from: " + getURI());
                     // Desconecta el cliente del servidor
                     RemotControlActivity.setStateConnected(client);
@@ -139,11 +140,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Para mandar el
-    public void Toast(CharSequence text){
+    public void Toast(Activity activity, CharSequence text){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
             }
         });
     }
