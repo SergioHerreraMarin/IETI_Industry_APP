@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="login_server">Login Server</string>
+    <string name="domini_o_ip">Domini o IP</string>
+    <string name="usuari">Usuari</string>
+    <string name="contrasenya">Contrasenya</string>
+    <string name="entrar">Entrar</string>
+    <string name="img_server">img_server</string>
+    <string name="servidor">servidor</string>
+    <string name="Servidor">Servidor</string>
+</resources>
