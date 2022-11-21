@@ -44,21 +44,28 @@ public class MainActivity extends AppCompatActivity {
     WebSocketClient client;
     ArrayList<String> credentials = new ArrayList<>();
 
+    EditText server;
+    EditText user;
+    EditText password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText server = findViewById(R.id.serverConnection);
-        EditText user = findViewById(R.id.user);
-        EditText password = findViewById(R.id.pwd);
+        server = findViewById(R.id.serverConnection);
+        user = findViewById(R.id.user);
+        password = findViewById(R.id.pwd);
 
         Button entrarAConexion = findViewById(R.id.button);
             entrarAConexion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    if(server.getText().equals("10.0.2.2")) Toast(MainActivity.this,"Server IP incorrect");
+                    if(server.getText().equals("10.0.2.2")){
+                        server.setText("");
+                        Toast(MainActivity.this,"Server IP incorrect");
+                    }
 
                     if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
                         Toast(MainActivity.this, "All fields are required");
@@ -88,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
                         changeActivity();
                         client.send("XML");
                     }else if(message.equals("NV")){
+                        user.setText("");
+                        password.setText("");
                         Toast(MainActivity.this,"User or password incorrect");
                     }else if(message.contains("id")){
                         Log.i("DATA: " , message);
