@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -81,17 +82,15 @@ public class MainActivity extends AppCompatActivity {
             client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
                 @Override
                 public void onMessage(String message){
-                    switch (message){
-                        case "V":
-                            changeActivity();
-                            client.send("XML");
-                            break;
-                        case "NV":
-                            Toast("User or password incorrect");
-                            break;
-                        case "Config":
-                            Toast("¡¡¡¡XML!!!!");
-                            break;
+
+                    if(message.equals("V")){
+                        changeActivity();
+                        client.send("XML");
+                    }else if(message.equals("NV")){
+                        Toast("User or password incorrect");
+                    }else if(message.contains("id")){
+                        Log.i("DATA: " , message);
+                        Model.componentsData = message;
                     }
                 }
 
@@ -128,10 +127,10 @@ public class MainActivity extends AppCompatActivity {
             client.send(userCredentials);
         } catch (WebsocketNotConnectedException e) {
             System.out.println("Connexió perduda ...");
+            Log.i("AQUI", "AQUI");
             connecta(uri);
         }
     }
-
 
     public void changeActivity() {
         Intent intent = new Intent(this, RemotControlActivity.class);
