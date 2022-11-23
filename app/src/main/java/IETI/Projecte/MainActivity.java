@@ -112,15 +112,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         user.setText("");
                         password.setText("");
-                        
                     }
                 }
             });
 
-    }
-
-    public void connecta (String uri) {
-        
     }
 
     protected void envia(){
