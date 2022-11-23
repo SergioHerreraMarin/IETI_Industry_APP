@@ -69,9 +69,50 @@ public class MainActivity extends AppCompatActivity {
                         credentials.add(String.valueOf(user.getText()));
                         credentials.add(String.valueOf(password.getText()));
 
-                        connecta(uri);
+                        try {
+                            client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
+                                @Override
+                                public void onMessage(String message){
+
+                                    if(message.equals("V")){
+                                        changeActivity();
+                                        client.send("XML");
+                                    }else if(message.equals("NV")){
+                                        Toast(MainActivity.this,"User or password incorrect");
+                                    }else if(message.contains("id")){
+                                        Log.i("DATA: " , message);
+                                        Model.componentsData = message;
+                                    }
+                                }
+
+                                @Override
+                                public void onOpen(ServerHandshake handshake) {
+                                    System.out.println("Connected to: " + getURI());
+                                    envia();
+                                }
+
+                                @Override
+                                public void onClose(int code, String reason, boolean remote) {
+                                    Toast(MainActivity.this,"Server IP incorrect");
+                                    System.out.println("Disconnected from: " + getURI());
+                                    // Desconecta el cliente del servidor
+                                    RemotControlActivity.setStateConnected(client);
+                                }
+
+                                @Override
+                                public void onError(Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            };
+
+                            client.connect();
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
+                        }
                         user.setText("");
                         password.setText("");
+                        
                     }
                 }
             });
@@ -79,47 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void connecta (String uri) {
-        try {
-            client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
-                @Override
-                public void onMessage(String message){
-
-                    if(message.equals("V")){
-                        changeActivity();
-                        client.send("XML");
-                    }else if(message.equals("NV")){
-                        Toast(MainActivity.this,"User or password incorrect");
-                    }else if(message.contains("id")){
-                        Log.i("DATA: " , message);
-                        Model.componentsData = message;
-                    }
-                }
-
-                @Override
-                public void onOpen(ServerHandshake handshake) {
-                    System.out.println("Connected to: " + getURI());
-                    envia();
-                }
-
-                @Override
-                public void onClose(int code, String reason, boolean remote) {
-                    Toast(MainActivity.this,"Server IP incorrect");
-                    System.out.println("Disconnected from: " + getURI());
-                    // Desconecta el cliente del servidor
-                    RemotControlActivity.setStateConnected(client);
-                }
-
-                @Override
-                public void onError(Exception ex) {
-                    ex.printStackTrace();
-                }
-            };
-
-            client.connect();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
-        }
+        
     }
 
     protected void envia(){
