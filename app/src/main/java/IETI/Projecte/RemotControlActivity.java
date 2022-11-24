@@ -18,6 +18,7 @@ import org.java_websocket.client.WebSocketClient;
 
 public class RemotControlActivity extends AppCompatActivity {
 
+    static WebSocket socket = new WebSocket();
     LinearLayout exteriorLinearLayout;
     private final int CONTROL_LAYOUT_PADDING = 20;
     // CustomControlLayout customControlLayout;
@@ -27,6 +28,8 @@ public class RemotControlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remot_control);
+
+        WebSocket.act = RemotControlActivity.this;
 
         Button logoutButton = new Button(this);
         logoutButton.setText("LOG OUT");
@@ -63,8 +66,10 @@ public class RemotControlActivity extends AppCompatActivity {
 
     }
 
-    static void setStateConnected(WebSocketClient c){
-        client = c;
+    public void connectionLost() {
+        Intent intent = new Intent(RemotControlActivity.this, MainActivity.class);
+        MainActivity.socket = RemotControlActivity.socket;
+        startActivity(intent);
     }
 
     public AlertDialog serverDisconnectedDialog(){
@@ -72,16 +77,12 @@ public class RemotControlActivity extends AppCompatActivity {
         builder.setMessage("You have disconnected from the server");
         builder.setNeutralButton("Continue", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                client.close();
-                changeActiviy();
+                socket.client.close();
+                Intent intent = new Intent(RemotControlActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
         return builder.create();
-    }
-
-    public void changeActiviy() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     public void Toast(Activity activity, CharSequence text){

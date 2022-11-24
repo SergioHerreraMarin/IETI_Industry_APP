@@ -3,7 +3,9 @@ package IETI.Projecte;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,11 +40,14 @@ import org.java_websocket.handshake.ServerHandshake;
 public class MainActivity extends AppCompatActivity {
 
     // Parámetros para la conexión
+
     int port = 8888;
-    String location = "";
-    String uri = "";
-    WebSocketClient client;
+    String location = "10.0.2.2";
+    String uri = "ws://" + location + ":" + port;
+    static WebSocket socket = new WebSocket();
     ArrayList<String> credentials = new ArrayList<>();
+
+
 
     EditText server;
     EditText user;
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         user = findViewById(R.id.user);
         password = findViewById(R.id.pwd);
 
+        WebSocket.act = MainActivity.this;
+
         Button entrarAConexion = findViewById(R.id.button);
             entrarAConexion.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -70,82 +77,42 @@ public class MainActivity extends AppCompatActivity {
                     if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
                         Toast(MainActivity.this, "All fields are required");
                     } else {
-                        location = String.valueOf(server.getText());
-                        uri = "ws://" + location + ":" + port;
-
                         credentials.add(String.valueOf(user.getText()));
                         credentials.add(String.valueOf(password.getText()));
 
-                        connecta(uri);
+                        socket.connecta(uri);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        socket.client.send("UC#"+user.getText().toString()+"#"+password.getText().toString());
+
                         user.setText("");
                         password.setText("");
                     }
                 }
             });
-
     }
 
-    public void connecta (String uri) {
-        try {
-            client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
+    public void login(String message) {
+        if (message.equals("V")) {
+            socket.client.send("XML");
+            RemotControlActivity.socket = MainActivity.socket;
+            Intent intent = new Intent(MainActivity.this, RemotControlActivity.class);
+            startActivity(intent);
+        } else {
+            AlertDialog.Builder popup = new AlertDialog.Builder(MainActivity.this);
+            popup.setTitle("Log In, Check the credentials again");
+            popup.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                 @Override
-                public void onMessage(String message){
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-                    if(message.equals("V")){
-                        changeActivity();
-                        client.send("XML");
-                    }else if(message.equals("NV")){
-                        user.setText("");
-                        password.setText("");
-                        Toast(MainActivity.this,"User or password incorrect");
-                    }else if(message.contains("id")){
-                        Log.i("DATA: " , message);
-                        Model.componentsData = message;
-                    }
                 }
-
-                @Override
-                public void onOpen(ServerHandshake handshake) {
-                    System.out.println("Connected to: " + getURI());
-                    envia();
-                }
-
-                @Override
-                public void onClose(int code, String reason, boolean remote) {
-                    Toast(MainActivity.this,"Server IP incorrect");
-                    System.out.println("Disconnected from: " + getURI());
-                    // Desconecta el cliente del servidor
-                    RemotControlActivity.setStateConnected(client);
-                }
-
-                @Override
-                public void onError(Exception ex) {
-                    ex.printStackTrace();
-                }
-            };
-
-            client.connect();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
+            });
+            popup.create();
+            popup.show();
         }
-    }
-
-    protected void envia(){
-        try {
-            String userCredentials = "UC#" + credentials.get(0) + "#" + credentials.get(1);
-            client.send(userCredentials);
-        } catch (WebsocketNotConnectedException e) {
-            System.out.println("Connexió perduda ...");
-            Log.i("AQUI", "AQUI");
-            connecta(uri);
-        }
-    }
-
-    public void changeActivity() {
-        Intent intent = new Intent(this, RemotControlActivity.class);
-        intent.putExtra("credentials",credentials);
-        startActivity(intent);
     }
 
     // Para mandar el
