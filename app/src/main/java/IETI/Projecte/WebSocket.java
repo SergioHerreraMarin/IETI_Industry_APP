@@ -1,7 +1,10 @@
 package IETI.Projecte;
 
 import android.app.Activity;
-import android.util.Log;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.widget.Toast;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
@@ -23,7 +26,7 @@ class WebSocket {
                 public void onMessage(String message){
 
                     if ((message.equalsIgnoreCase("V") || message.equalsIgnoreCase("NV")) && act instanceof MainActivity) {
-                        ((MainActivity) act).login(message);
+                        ((MainActivity) act).loginActivity(message);
                     } else if (message.contains("id")){
                         Model.componentsData = message;
                     }
@@ -53,4 +56,5 @@ class WebSocket {
             System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
         }
     }
+
 }

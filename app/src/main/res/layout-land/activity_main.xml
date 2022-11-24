@@ -12,7 +12,11 @@
         android:layout_height="172dp"
         android:layout_marginStart="64dp"
         android:layout_marginTop="148dp"
+        android:layout_marginEnd="77dp"
+        android:layout_marginBottom="91dp"
         android:contentDescription="@string/img_server"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pwd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_server" />
@@ -24,9 +28,11 @@
         android:layout_marginStart="139dp"
         android:layout_marginTop="72dp"
         android:layout_marginEnd="121dp"
+        android:layout_marginBottom="31dp"
         android:text="IETI Industry"
         android:textSize="34sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/image"
         app:layout_constraintEnd_toStartOf="@+id/titleLogin"
         app:layout_constraintHorizontal_bias="0.649"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,6 +42,7 @@
         android:id="@+id/pwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="116dp"
         android:layout_marginBottom="116dp"
         android:autofillHints=""
@@ -45,12 +52,16 @@
         android:minHeight="48dp"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/user" />
 
     <EditText
         android:id="@+id/serverConnection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="31dp"
         android:layout_marginEnd="116dp"
         android:layout_marginBottom="244dp"
         android:autofillHints=""
@@ -60,12 +71,16 @@
         android:minHeight="48dp"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/titleLogin" />
 
     <EditText
         android:id="@+id/user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="116dp"
         android:layout_marginBottom="184dp"
         android:autofillHints=""
@@ -75,29 +90,36 @@
         android:minHeight="48dp"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/serverConnection" />
 
     <TextView
         android:id="@+id/titleLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="56dp"
         android:layout_marginEnd="256dp"
         android:text="Login Server"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/login"
         android:layout_width="280dp"
         android:layout_height="48dp"
+        android:layout_marginStart="77dp"
+        android:layout_marginTop="19dp"
         android:layout_marginEnd="116dp"
         android:layout_marginBottom="48dp"
         android:text="Entrar"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/image"
+        app:layout_constraintTop_toBottomOf="@+id/pwd" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

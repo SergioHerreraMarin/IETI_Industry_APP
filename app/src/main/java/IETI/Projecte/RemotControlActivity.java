@@ -62,8 +62,6 @@ public class RemotControlActivity extends AppCompatActivity {
                 serverDisconnectedDialog().show();
             }
         });
-
-
     }
 
     public void connectionLost() {
@@ -73,7 +71,7 @@ public class RemotControlActivity extends AppCompatActivity {
     }
 
     public AlertDialog serverDisconnectedDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(RemotControlActivity.this);
         builder.setMessage("You have disconnected from the server");
         builder.setNeutralButton("Continue", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -93,5 +91,4 @@ public class RemotControlActivity extends AppCompatActivity {
             }
         });
     }
-
 }

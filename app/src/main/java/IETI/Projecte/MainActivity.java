@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity {
     String location = "10.0.2.2";
     String uri = "ws://" + location + ":" + port;
     static WebSocket socket = new WebSocket();
-    ArrayList<String> credentials = new ArrayList<>();
-
-
 
     EditText server;
     EditText user;
@@ -65,49 +62,41 @@ public class MainActivity extends AppCompatActivity {
         WebSocket.act = MainActivity.this;
 
         Button entrarAConexion = findViewById(R.id.button);
-            entrarAConexion.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if(server.getText().equals("10.0.2.2")){
-                        server.setText("");
-                        Toast(MainActivity.this,"Server IP incorrect");
-                    }
-
-                    if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
-                        Toast(MainActivity.this, "All fields are required");
-                    } else {
-                        credentials.add(String.valueOf(user.getText()));
-                        credentials.add(String.valueOf(password.getText()));
-
-                        socket.connecta(uri);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                        socket.client.send("UC#"+user.getText().toString()+"#"+password.getText().toString());
-
-                        user.setText("");
-                        password.setText("");
-                    }
+        entrarAConexion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!server.getText().toString().contains("10.0.2.2")){
+                    Toast(MainActivity.this,"Server IP incorrect");
                 }
-            });
+
+                if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
+                    Toast(MainActivity.this, "All fields are required");
+                } else {
+                    socket.connecta(uri);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    socket.client.send("UC#"+user.getText().toString()+"#"+password.getText().toString());
+                }
+            }
+        });
     }
 
-    public void login(String message) {
+    public void loginActivity(String message) {
         if (message.equals("V")) {
             socket.client.send("XML");
             RemotControlActivity.socket = MainActivity.socket;
             Intent intent = new Intent(MainActivity.this, RemotControlActivity.class);
             startActivity(intent);
+
         } else {
             AlertDialog.Builder popup = new AlertDialog.Builder(MainActivity.this);
-            popup.setTitle("Log In, Check the credentials again");
+            popup.setTitle("Log In Incorrect, Check the credentials again");
             popup.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-
                 }
             });
             popup.create();
