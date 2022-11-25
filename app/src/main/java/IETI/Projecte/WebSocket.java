@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import org.java_websocket.client.WebSocketClient;
@@ -13,11 +15,16 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 class WebSocket {
 
     static Activity act;
     WebSocketClient client;
+
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     public void connecta (String uri) {
         try {
@@ -27,8 +34,20 @@ class WebSocket {
 
                     if ((message.equalsIgnoreCase("V") || message.equalsIgnoreCase("NV")) && act instanceof MainActivity) {
                         ((MainActivity) act).loginActivity(message);
-                    } else if (message.contains("id")){
+                    }else if (message.contains("=")){
+                        System.out.println("RECIIDO XD: " + message);
                         Model.componentsData = message;
+                    }else if(message.contains("current")){
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                System.out.println("UPDATE COMPONENT XD: " + message);
+                                Model.updateComponent(message);
+                            }
+                        });
+
+
                     }
                 }
 

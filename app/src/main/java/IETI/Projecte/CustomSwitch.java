@@ -3,21 +3,30 @@ package IETI.Projecte;
 import android.content.Context;
 import android.widget.Switch;
 
-public class CustomSwitch {
+public class CustomSwitch extends Switch {
 
     private String id;
     private String block;
     private String label;
     private String defaultValue;
 
-    public CustomSwitch(String id,String block, String label, String defaultValue) {
+    public CustomSwitch(Context context, String id,String block, String label, String defaultValue) {
+        super(context);
         this.id = id;
         this.block = block;
         this.label = label;
         this.defaultValue = defaultValue;
+
+        if(defaultValue.equals("on")){
+            this.setChecked(true);
+        }else{
+            this.setChecked(false);
+        }
+
+        this.setText(label);
     }
 
-    public String getId() {
+    public String getIdd() {
         return id;
     }
 
@@ -47,21 +56,14 @@ public class CustomSwitch {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
-    }
 
-    Switch createCustomSwitch(Context context){
-
-        Switch customSwitch = new Switch(context);
         if(defaultValue.equals("on")){
-            customSwitch.setChecked(true);
+            this.setChecked(true);
         }else{
-            customSwitch.setChecked(false);
+            this.setChecked(false);
         }
-
-        customSwitch.setText(label);
-
-        return customSwitch;
     }
+
 
     @Override
     public String toString() {

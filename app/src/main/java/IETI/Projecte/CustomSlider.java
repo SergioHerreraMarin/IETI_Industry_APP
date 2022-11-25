@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.android.material.slider.Slider;
 
-public class CustomSlider {
+public class CustomSlider extends Slider {
 
     private String id;
     private String block;
@@ -14,7 +14,8 @@ public class CustomSlider {
     private float max;
     private float step;
 
-    public CustomSlider(String id, String block, String label, float defaultValue, float min, float max, float step) {
+    public CustomSlider(Context context, String id, String block, String label, float defaultValue, float min, float max, float step) {
+        super(context);
         this.id = id;
         this.block = block;
         this.label = label;
@@ -23,10 +24,15 @@ public class CustomSlider {
         this.max = max;
         this.step = step;
 
+        this.setValueFrom(min);
+        this.setValueTo(max);
+        //slider.setStepSize(step);
+        this.setValue(defaultValue);
+
     }
 
 
-    public String getId() {
+    public String getIdd() {
         return id;
     }
 
@@ -56,6 +62,7 @@ public class CustomSlider {
 
     public void setDefaultValue(float defaultValue) {
         this.defaultValue = defaultValue;
+        this.setValue(defaultValue);
     }
 
     public float getMin() {
@@ -80,15 +87,6 @@ public class CustomSlider {
 
     public void setStep(float step) {
         this.step = step;
-    }
-
-    public Slider createCustomSlider(Context context){
-        Slider slider = new Slider(context);
-        slider.setValueFrom(min);
-        slider.setValueTo(max);
-        //slider.setStepSize(step);
-        slider.setValue(defaultValue);
-        return slider;
     }
 
 

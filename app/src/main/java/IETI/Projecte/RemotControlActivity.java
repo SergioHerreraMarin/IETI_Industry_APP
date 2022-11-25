@@ -41,20 +41,39 @@ public class RemotControlActivity extends AppCompatActivity {
         exteriorLinearLayout.setBackgroundColor(Color.WHITE);
         exteriorLinearLayout.setPadding(CONTROL_LAYOUT_PADDING, CONTROL_LAYOUT_PADDING , CONTROL_LAYOUT_PADDING, CONTROL_LAYOUT_PADDING);
 
+
         if(Model.componentsData != null){
             Model.loadDataFromServer(this);
+
+            for(CustomControlLayout control : Model.customControls){
+                for(Object comp : Model.customComponents){
+
+                    if(comp instanceof CustomSlider){
+                        if(((CustomSlider)comp).getBlock().equals(control.getControlId())){
+                            control.addSliderToPanel(((CustomSlider)comp));
+                        }
+                    }else if(comp instanceof CustomDropdown){
+                        if(((CustomDropdown)comp).getBlock().equals(control.getControlId())){
+                            control.addDropdownToPanel(((CustomDropdown)comp));
+                        }
+                    }else if(comp instanceof CustomSwitch){
+                        if(((CustomSwitch)comp).getBlock().equals(control.getControlId())){
+                            control.addSwitchToPanel(((CustomSwitch)comp));
+                        }
+                    }
+                }
+            }
+
             for(CustomControlLayout control : Model.customControls){
                 exteriorLinearLayout.addView(control);
             }
+
         } else {
             Toast(RemotControlActivity.this,"There aren't any componenets loaded in the server yet.");
         }
 
-
         exteriorLinearLayout.addView(logoutButton);
         this.setContentView(exteriorLinearLayout);
-
-
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

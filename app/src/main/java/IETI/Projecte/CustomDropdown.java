@@ -1,12 +1,14 @@
 package IETI.Projecte;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-public class CustomDropdown {
+@SuppressLint("AppCompatCustomView")
+public class CustomDropdown extends Spinner {
 
     private String id;
     private String block;
@@ -14,16 +16,26 @@ public class CustomDropdown {
     private int defaultValue;
     private ArrayList<String> options = new ArrayList<String>();
 
-    public CustomDropdown(String id, String block, String label, int defaultValue, ArrayList<String> options) {
-
+    public CustomDropdown(Context context, String id, String block, String label, int defaultValue, ArrayList<String> options) {
+        super(context);
         this.id = id;
         this.block = block;
         this.label = label;
         this.defaultValue = defaultValue;
         this.options = options;
+
+        String[] adapterOptions = new String[options.size()];
+        for(int i = 0; i < options.size(); i++){
+            adapterOptions[i] = options.get(i);
+        }
+
+        ArrayAdapter<String> adaper = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, adapterOptions);
+        this.setAdapter(adaper);
+        this.setSelection(defaultValue);
+
     }
 
-    public String getId() {
+    public String getIdd() {
         return id;
     }
 
@@ -53,6 +65,7 @@ public class CustomDropdown {
 
     public void setDefaultValue(int defaultValue) {
         this.defaultValue = defaultValue;
+        this.setSelection(defaultValue);
     }
 
     public ArrayList<String> getOptions() {
@@ -63,19 +76,6 @@ public class CustomDropdown {
         this.options = options;
     }
 
-    public Spinner createCustomSpinner(Context context){
-
-            String[] adapterOptions = new String[options.size()];
-            for(int i = 0; i < options.size(); i++){
-                adapterOptions[i] = options.get(i);
-            }
-
-            Spinner spinner = new Spinner(context);
-            ArrayAdapter<String> adaper = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, adapterOptions);
-            spinner.setAdapter(adaper);
-            spinner.setSelection(defaultValue);
-            return spinner;
-    }
 
 
     @Override

@@ -1,6 +1,8 @@
 package IETI.Projecte;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -9,6 +11,8 @@ import android.widget.TextView;
 import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Model {
 
@@ -23,7 +27,6 @@ public class Model {
         return null;
     }
 
-
     public static void loadDataFromServer(Context context){
 
         String[] controls = splitToControls();
@@ -31,7 +34,13 @@ public class Model {
         for(String control : controls){ //Por cada control crea uno.
             Log.i("CONTROL: ", control);
             CustomControlLayout customControl = new CustomControlLayout(context);
-            String components[] = control.split("%");
+
+            String[] componentsBlockid = control.split("¿"); //[0] = componente [1] bloque id
+            Log.i("CONTROLLL: ", componentsBlockid[0]);
+            Log.i("BLOQUE ID: ", componentsBlockid[1]);
+            customControl.setControlId(componentsBlockid[1]);
+
+            String components[] = componentsBlockid[0].split("%");
             for(String component : components){
                 Log.i("COMPONENT: ", component);
                 if(component.length() != 0){
@@ -80,9 +89,8 @@ public class Model {
                                 }
                             }
                             //CREATE CUSTOM SLIDER
-                            CustomSlider slider = new CustomSlider(sliderId, sliderBlock, sliderLabel, sliderDefaultValue, sliderMin, sliderMax, sliderStep);
-                            Slider sl = slider.createCustomSlider(context);
-                            customControl.addSliderToPanel(sl);
+                            CustomSlider slider = new CustomSlider(context, sliderId, sliderBlock, sliderLabel, sliderDefaultValue, sliderMin, sliderMax, sliderStep);
+                            customComponents.add(slider);
                             break;
 
                         case "CustomSwitch":
@@ -115,9 +123,8 @@ public class Model {
                                 }
                             }
                             //CREATE CUSTOM SWITCH
-                            CustomSwitch switchs = new CustomSwitch(switchId, switchBlock, switchLabel, switchDefaultValue);
-                            Switch sw = switchs.createCustomSwitch(context);
-                            customControl.addSwitchToPanel(sw);
+                            CustomSwitch switchs = new CustomSwitch(context, switchId, switchBlock, switchLabel, switchDefaultValue);
+                            customComponents.add(switchs);
                             break;
                         case "CustomSensor":
 
@@ -201,9 +208,8 @@ public class Model {
                                 }
                             }
                             //CREATE CUSTOM DROPDOWN
-                            CustomDropdown dropdown = new CustomDropdown(dropdownId, dropdownBlock, dropdownLabel, dropdownDefaultValue, dropdownOptions);
-                            Spinner spinner = dropdown.createCustomSpinner(context);
-                            customControl.addDropdownToPanel(spinner);
+                            CustomDropdown dropdown = new CustomDropdown(context, dropdownId, dropdownBlock, dropdownLabel, dropdownDefaultValue, dropdownOptions);
+                            customComponents.add(dropdown);
                             break;
                         default:
                             Log.i("ERROR: ", "*Clave desconocida*");
@@ -215,7 +221,57 @@ public class Model {
         }
     }
 
+    public static void updateComponent(String message){
+        System.out.println("SE EJECUTA");
+        String idBlock = "", idComponent = "",  currentComponentValue = "";
 
+        String[] componentProperties = message.split("!");
+
+        for(String propert : componentProperties){
+            String[] nameValue = propert.split(":"); //[0] value name, [1] value
+
+            switch(nameValue[0]){
+                case "blockID":
+                    idBlock = nameValue[1];
+                    break;
+                case "id":
+                    idComponent = nameValue[1];
+                    break;
+                case "current":
+                    currentComponentValue = nameValue[1];
+                    break;
+                default:
+                    System.out.println("Valor no encontrado");
+                break;
+
+            }
+        }
+
+        System.out.println("HOLA!");
+
+
+        for(Object comp : Model.customComponents){
+            if(comp instanceof CustomSlider){
+                if(((CustomSlider)comp).getIdd().equals(idComponent)){
+                    ((CustomSlider)comp).setDefaultValue(Float.valueOf(currentComponentValue));
+
+                }
+            }else if(comp instanceof CustomDropdown){
+                if(((CustomDropdown)comp).getIdd().equals(idComponent)){
+                    ((CustomDropdown)comp).setDefaultValue(Integer.valueOf(currentComponentValue));
+                }
+            }else if(comp instanceof CustomSwitch){
+                if(((CustomSwitch)comp).getIdd().equals(idComponent)){
+                    System.out.println("CURRENT VALUE!: " + currentComponentValue);
+
+                    ((CustomSwitch)comp).setDefaultValue(currentComponentValue);
+                    System.out.println("SE EJECUTA 2");
+                    System.out.println("CURRENT VALUE: " +  ((CustomSwitch)comp).getDefaultValue());
+                }
+            }
+        }
+
+    }
 
 
 }
