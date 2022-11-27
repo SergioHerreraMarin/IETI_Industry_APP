@@ -1,12 +1,8 @@
 package IETI.Projecte;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
@@ -21,7 +17,7 @@ import java.util.concurrent.Executors;
 class WebSocket {
 
     static Activity act;
-    WebSocketClient client;
+    static WebSocketClient client;
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler = new Handler(Looper.getMainLooper());
@@ -34,20 +30,17 @@ class WebSocket {
 
                     if ((message.equalsIgnoreCase("V") || message.equalsIgnoreCase("NV")) && act instanceof MainActivity) {
                         ((MainActivity) act).loginActivity(message);
-                    }else if (message.contains("=")){
-                        System.out.println("RECIIDO XD: " + message);
-                        Model.componentsData = message;
-                    }else if(message.contains("current")){
 
+                    }else if (message.contains("=")){
+                        Model.componentsData = message;
+
+                    }else if(message.contains("current")){
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                System.out.println("UPDATE COMPONENT XD: " + message);
                                 Model.updateComponent(message);
                             }
                         });
-
-
                     }
                 }
 
@@ -70,10 +63,16 @@ class WebSocket {
             };
 
             client.connect();
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
             System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
         }
     }
+
+    public static void updateServerComponents(String message){
+        client.send(message);
+    }
+
 
 }

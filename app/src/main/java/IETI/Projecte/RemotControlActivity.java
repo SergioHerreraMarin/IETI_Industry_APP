@@ -1,5 +1,6 @@
 package IETI.Projecte;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -8,11 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.android.material.slider.Slider;
 
 import org.java_websocket.client.WebSocketClient;
 
@@ -44,23 +48,80 @@ public class RemotControlActivity extends AppCompatActivity {
 
         if(Model.componentsData != null){
             Model.loadDataFromServer(this);
+            for(Object comp : Model.customComponents){
 
-            for(CustomControlLayout control : Model.customControls){
-                for(Object comp : Model.customComponents){
+                if(comp instanceof CustomSlider){
 
-                    if(comp instanceof CustomSlider){
+                    for(CustomControlLayout control : Model.customControls){
                         if(((CustomSlider)comp).getBlock().equals(control.getControlId())){
                             control.addSliderToPanel(((CustomSlider)comp));
                         }
-                    }else if(comp instanceof CustomDropdown){
+                    }
+
+                    ((CustomSlider)comp).addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+                        @Override
+                        public void onStartTrackingTouch(@NonNull Slider slider) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(@NonNull Slider slider) {
+                            ((CustomSlider)comp).setDefaultValue(((CustomSlider)comp).getValue());
+                            String data;
+                            data = "blockID:" + ((CustomSlider)comp).getBlock() + "!id:" + ((CustomSlider)comp).getIdd() + "!current:" + ((CustomSlider)comp).getDefaultValue();
+                            WebSocket.updateServerComponents(data);
+                        }
+                    });
+
+
+                }else if(comp instanceof CustomDropdown){
+
+                    for(CustomControlLayout control : Model.customControls){
                         if(((CustomDropdown)comp).getBlock().equals(control.getControlId())){
                             control.addDropdownToPanel(((CustomDropdown)comp));
                         }
-                    }else if(comp instanceof CustomSwitch){
+                    }
+
+                    ((CustomDropdown)comp).setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            ((CustomDropdown)comp).setDefaultValue(((CustomDropdown)comp).getSelectedItemPosition());
+                            String data;
+                            data = "blockID:" + ((CustomDropdown)comp).getBlock() + "!id:" + ((CustomDropdown)comp).getIdd() + "!current:" + ((CustomDropdown)comp).getDefaultValue();
+                            WebSocket.updateServerComponents(data);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
+
+                }else if(comp instanceof CustomSwitch){
+
+                    for(CustomControlLayout control : Model.customControls){
                         if(((CustomSwitch)comp).getBlock().equals(control.getControlId())){
                             control.addSwitchToPanel(((CustomSwitch)comp));
                         }
                     }
+
+                    ((CustomSwitch)comp).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                            if(((CustomSwitch)comp).isChecked()){
+                                ((CustomSwitch)comp).setDefaultValue("on");
+                            }else{
+                                ((CustomSwitch)comp).setDefaultValue("off");
+                            }
+
+                            String data;
+                            data = "blockID:" + ((CustomSwitch)comp).getBlock() + "!id:" + ((CustomSwitch)comp).getIdd() + "!current:" + ((CustomSwitch)comp).getDefaultValue();
+                            WebSocket.updateServerComponents(data);
+                        }
+                    });
+
                 }
             }
 
@@ -78,6 +139,9 @@ public class RemotControlActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Model.customControls.clear();
+                Model.customComponents.clear();
+                Model.componentsData = "";
                 serverDisconnectedDialog().show();
             }
         });

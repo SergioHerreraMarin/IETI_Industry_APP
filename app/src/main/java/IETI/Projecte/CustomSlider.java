@@ -2,6 +2,8 @@ package IETI.Projecte;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.material.slider.Slider;
 
 public class CustomSlider extends Slider {
@@ -88,6 +90,8 @@ public class CustomSlider extends Slider {
     public void setStep(float step) {
         this.step = step;
     }
+
+
 
 
     @Override

@@ -81,5 +81,4 @@ public class CustomControlLayout extends LinearLayout {
     }
 
 
-
 }
