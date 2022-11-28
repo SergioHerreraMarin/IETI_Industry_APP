@@ -25,8 +25,6 @@ public class RemotControlActivity extends AppCompatActivity {
     static WebSocket socket = new WebSocket();
     LinearLayout exteriorLinearLayout;
     private final int CONTROL_LAYOUT_PADDING = 20;
-    // CustomControlLayout customControlLayout;
-    static WebSocketClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +145,7 @@ public class RemotControlActivity extends AppCompatActivity {
         });
     }
 
-    public void connectionLost() {
+    public void connectionLost(){
         Intent intent = new Intent(RemotControlActivity.this, MainActivity.class);
         MainActivity.socket = RemotControlActivity.socket;
         startActivity(intent);
@@ -164,6 +162,22 @@ public class RemotControlActivity extends AppCompatActivity {
             }
         });
         return builder.create();
+    }
+
+    public void serverShutdownDialog(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(RemotControlActivity.this);
+                builder.setMessage("The server has been disconnected, press OK to close this window");
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        connectionLost();
+                    }
+                });
+                builder.create().show();
+            }
+        });
     }
 
     public void Toast(Activity activity, CharSequence text){

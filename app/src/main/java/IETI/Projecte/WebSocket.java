@@ -1,6 +1,9 @@
 package IETI.Projecte;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -52,7 +55,7 @@ class WebSocket {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     if (act instanceof RemotControlActivity) {
-                        ((RemotControlActivity) act).connectionLost();
+                        ((RemotControlActivity) act).serverShutdownDialog();
                     }
                 }
 
@@ -73,6 +76,8 @@ class WebSocket {
     public static void updateServerComponents(String message){
         client.send(message);
     }
+
+
 
 
 }

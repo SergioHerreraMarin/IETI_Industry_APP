@@ -4,37 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-
-
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_6455;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
-import org.java_websocket.handshake.ServerHandshake;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -42,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
     // Parámetros para la conexión
 
     int port = 8888;
-    String location = "10.0.2.2";
-    String uri = "ws://" + location + ":" + port;
     static WebSocket socket = new WebSocket();
 
     EditText server;
@@ -56,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         server = findViewById(R.id.serverConnection);
+        server.setText("10.0.2.2");
+
         user = findViewById(R.id.user);
         password = findViewById(R.id.pwd);
 
@@ -72,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 if(TextUtils.isEmpty(server.getText()) || TextUtils.isEmpty(user.getText()) || TextUtils.isEmpty(password.getText())){
                     Toast(MainActivity.this, "All fields are required");
                 } else {
+                    String uri = "ws://" + server.getText().toString() + ":" + port;
                     socket.connecta(uri);
                     try {
                         Thread.sleep(1000);
@@ -82,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
     }
 
     public void loginActivity(String message) {
@@ -90,21 +71,26 @@ public class MainActivity extends AppCompatActivity {
             RemotControlActivity.socket = MainActivity.socket;
             Intent intent = new Intent(MainActivity.this, RemotControlActivity.class);
             startActivity(intent);
-
-        } else {
-            AlertDialog.Builder popup = new AlertDialog.Builder(MainActivity.this);
-            popup.setTitle("Log In Incorrect, Check the credentials again");
-            popup.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                }
-            });
-            popup.create();
-            popup.show();
+        } else if (message.equals("NV")){
+            userIncorrect();
         }
     }
 
-    // Para mandar el
+    public void userIncorrect(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("User or password incorrect, press OK to close this window");
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                builder.create().show();
+            }
+        });
+    };
+
     public void Toast(Activity activity, CharSequence text){
         runOnUiThread(new Runnable() {
             @Override
