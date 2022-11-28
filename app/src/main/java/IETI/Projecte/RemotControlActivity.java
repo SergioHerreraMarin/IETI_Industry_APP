@@ -26,6 +26,8 @@ public class RemotControlActivity extends AppCompatActivity {
     LinearLayout exteriorLinearLayout;
     private final int CONTROL_LAYOUT_PADDING = 20;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +37,12 @@ public class RemotControlActivity extends AppCompatActivity {
 
         Button logoutButton = new Button(this);
         logoutButton.setText("LOG OUT");
-        logoutButton.setBackgroundColor(Color.rgb(89,7,166));
+        logoutButton.setBackgroundColor(Color.rgb(73,84,100));
         logoutButton.setTextColor(Color.WHITE);
 
         exteriorLinearLayout = new LinearLayout(this);
         exteriorLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        exteriorLinearLayout.setBackgroundColor(Color.WHITE);
+        exteriorLinearLayout.setBackgroundColor(Color.rgb(244, 244, 242));
         exteriorLinearLayout.setPadding(CONTROL_LAYOUT_PADDING, CONTROL_LAYOUT_PADDING , CONTROL_LAYOUT_PADDING, CONTROL_LAYOUT_PADDING);
 
 

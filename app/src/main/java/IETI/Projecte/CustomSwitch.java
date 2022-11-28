@@ -1,6 +1,7 @@
 package IETI.Projecte;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.Switch;
 
 public class CustomSwitch extends Switch {
@@ -16,6 +17,7 @@ public class CustomSwitch extends Switch {
         this.block = block;
         this.label = label;
         this.defaultValue = defaultValue;
+        this.setHighlightColor(Color.rgb(124, 117, 117));
 
         if(defaultValue.equals("on")){
             this.setChecked(true);

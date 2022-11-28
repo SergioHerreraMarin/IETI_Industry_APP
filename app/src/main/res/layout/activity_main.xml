@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:background="@color/background"
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <EditText
@@ -106,7 +107,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_server" />
+        app:srcCompat="@drawable/icon" />
 
     <TextView
         android:id="@+id/textView"

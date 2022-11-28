@@ -27,25 +27,25 @@ public class CustomControlLayout extends LinearLayout {
         this.setPadding(CONTROL_LAYOUT_PADDING,CONTROL_LAYOUT_PADDING,CONTROL_LAYOUT_PADDING,CONTROL_LAYOUT_PADDING);
 
         GradientDrawable border = new GradientDrawable();
-        border.setColor(Color.LTGRAY);
-        border.setStroke(15,Color.WHITE);
+        border.setColor(Color.rgb(232, 232, 232));
+        border.setStroke(15,Color.rgb(244, 244, 242));
         this.setBackground(border);
 
         slidersLinearLayout = new LinearLayout(context);
         slidersLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        slidersLinearLayout.setBackgroundColor(Color.LTGRAY);
+        slidersLinearLayout.setBackgroundColor(Color.rgb(232, 232, 232));
 
         switchLinearLayout = new LinearLayout(context);
         switchLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        switchLinearLayout.setBackgroundColor(Color.LTGRAY);
+        switchLinearLayout.setBackgroundColor(Color.rgb(232, 232, 232));
 
         dropdownLinearLayout = new LinearLayout(context);
         dropdownLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        dropdownLinearLayout.setBackgroundColor(Color.LTGRAY);
+        dropdownLinearLayout.setBackgroundColor(Color.rgb(232, 232, 232));
 
         sensorsLinearLayout = new LinearLayout(context);
         sensorsLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        sensorsLinearLayout.setBackgroundColor(Color.LTGRAY);
+        sensorsLinearLayout.setBackgroundColor(Color.rgb(232, 232, 232));
 
 
         this.addView(slidersLinearLayout);

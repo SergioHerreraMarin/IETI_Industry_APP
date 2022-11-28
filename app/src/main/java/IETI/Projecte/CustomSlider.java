@@ -1,6 +1,7 @@
 package IETI.Projecte;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 
